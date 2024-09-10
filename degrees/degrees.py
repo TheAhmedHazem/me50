@@ -1,5 +1,6 @@
 import csv
 import sys
+from collections import deque
 
 from util import Node, StackFrontier, QueueFrontier
 
@@ -91,8 +92,24 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    queue = deque([(source, [])])
+    explored = set()
+    
+    while queue:
+        (person_id, path) = queue.popleft()
 
-    # TODO
+        if person_id in explored:
+            continue
+
+        explored.add(person_id)
+
+        for (movie_id, neighbor_id) in neighbors_for_person(person_id):
+            if neighbor_id == target:
+                return path + [(movie_id, neighbor_id)]
+            if neighbor_id not in explored:
+                new_path = path + [(movie_id, neighbor_id)]
+                queue.append((neighbor_id, new_path))
+    return None
     raise NotImplementedError
 
 
